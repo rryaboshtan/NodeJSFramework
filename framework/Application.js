@@ -26,23 +26,16 @@ class Application {
          Object.keys(endpoint).forEach(method => {
             const handler = endpoint[method];
             this.emitter.on(this.#getRouteMask(path, method), (req, res) => {
-               //  console.log('Router = ', router.endpoints['/users'].GET(req, res));
-               //  router.endpoints['/posts'].GET(req, res);
-               // this.middlewares.forEach(middleware => middleware(req, res));
                handler(req, res);
             });
          });
       });
-      //   console.log('Router = ', router.endpoints['/users'].GET(req, res));
    }
 
    #createServer = () => {
       return http.createServer((req, res) => {
-         // const emitted = this.emitter.emit(this.#getRouteMask(req.url, req.method), req, res);
-         //   console.log(this.emitter.listeners('[/posts]:[POST]'));
          let body = '';
          req.on('data', chunk => {
-            // console.log(chunk);
             body += chunk;
          });
 
@@ -51,7 +44,6 @@ class Application {
                req.body = JSON.parse(body);
             }
             this.middlewares.forEach(middleware => middleware(req, res));
-            // console.log(req.pathname);
             const emitted = this.emitter.emit(this.#getRouteMask(req.pathname, req.method), req, res);
             if (!emitted) {
                res.end();
